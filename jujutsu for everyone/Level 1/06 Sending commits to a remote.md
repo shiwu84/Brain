@@ -1,0 +1,97 @@
+---
+title: "Sending commits to a remote - Jujutsu for everyone"
+source: "https://jj-for-everyone.github.io/remote.html"
+author:
+published:
+created: 2026-04-20
+description: "A Jujutsu tutorial that requires no previous experience with Git or other version control systems."
+tags:
+  - "clippings"
+---
+## Sending commits to a remote
+
+Reset your progress
+
+To reset your progress to the start of this chapter, run the following command:
+
+```sh
+curl https://jj-for-everyone.github.io/reset.sh | bash -s remote
+cd ~/jj-tutorial/repo
+```
+
+We now have a commit which we don't want to lose. The way we're using Jujutsu right now, we don't have a backup at all. What would happen if we delete the `~/jj-tutorial/repo` directory on disk? The `.git` and `.jj` subdirectories would be deleted as well. Since our entire version control database is stored in there, we wouldn't be able to recover any of our work!
+
+We can fix that by duplicating our commit at another location, a so-called **remote**. Besides providing a backup, sending commits to a remote also allows you to share your work more easily for collaboration.
+
+The most popular form of a remote is to host a repository with an online service like [GitHub](https://github.com/). That requires an account and a little setup though, so we'll use a simpler approach in this tutorial. Your remote will be stored in a new directory on your computer, at a different location than your primary repository. That style of remote is bad as a backup and bad for collaboration, but it's perfect for learning how remotes work. There are a few practical tips about using GitHub in a [later chapter](https://jj-for-everyone.github.io/github.html).
+
+## Initializing the remote
+
+The following command will initialize a new repository for use as a remote:
+
+```sh
+git init --bare -b main ~/jj-tutorial/remote
+```
+
+Since you will likely use a different style of remote for real projects, you don't need to understand the details here. If you're curious anyway, expand the text box below.
+
+The difference between remote (bare) and regular repositories
+
+`git init --bare` is very similar to `jj git init`, which we used to create our main repository. However, instead of a "regular" Jujutsu repository, it creates a "bare" Git repository.
+
+What's the difference?
+
+Think of a regular Jujutsu repository as consisting of two parts: (1) Jujutsu's internal database stored in the `.git` and `.jj` directories and (2) all the actual files of your project, which you can modify - your **working copy**. The term "copy" is key here, because all the files are also stored in the internal database. The only reason a copy of the files exists outside the database is so you can read and modify them - "work" with them. So, "working copy" is a fitting name indeed.
+
+A bare repository is a Git repository **without a working copy** and without any Jujutsu-specific metadata. Since we will only use the bare repository for sending and receiving commits, we don't need a working copy or the `.jj` directory.
+
+If you inspect the content of the new bare repository, it will look very similar in structure to the content of the `.git` directory in our main repository:
+
+```js
+ls -lah ~/jj-tutorial/repo/.git
+ls -lah ~/jj-tutorial/remote
+```
+
+The `-b main` part ensures the default branch is called "main". If unspecified, the default branch can be different based on installation, configuration, etc. This would cause problems later.
+
+## Connecting to a remote
+
+A repository is connected to a remote by storing its location under a specific name. Remotes can be called anything, but when there is only one, the convention is to call it **origin**:
+
+```sh
+jj git remote add origin ~/jj-tutorial/remote
+```
+
+Here we connect to the remote by specifying its path on our filesystem. When using a repository hosted on GitHub or similar services, the path is replaced with a URL. More on that later. If everything went well, `origin` should now appear in the list of remotes:
+
+```sh
+jj git remote list
+```
+
+There is another speed bump before we can send our work to the remote. Remote repositories can receive a lot of commits, not all of which end up being needed in the long run. Therefore, it's desirable that commits which aren't needed anymore can be deleted automatically. How does the remote know which commits to delete and which to keep? With bookmarks!
+
+A bookmark is a simple named label that's attached to a commit. Every commit with such a bookmark label is considered important and won't be deleted automatically. Because of that mechanism, a bookmark is *required* for sending commits to a remote.
+
+Let's create a bookmark called **main** and point it to our completed commit. The name "main" is a convention that represents the primary state of the project. In legacy projects, the name "master" is also still in widespread use.
+
+```sh
+jj bookmark create main --revision mkmqlnox # <- substitute your change ID here
+```
+
+The command `jj bookmark create` expects a name (`main`) and a commit to which the bookmark should point. We identify the commit by its change ID (`--revision mkmqlnox`). For our purposes, the word "revision" is a synonym for "commit". The flag `--revision` can also be abbreviated as `-r`. Let's check the result with `jj log`:
+
+```js
+@  pwpuwyto alice@local 2025-07-22 20:22:36 35de496a
+│  (empty) (no description set)
+○  mkmqlnox alice@local 2025-07-22 20:20:34 main 5b79353a
+│  Add readme with project title
+◆  zzzzzzzz root() 00000000
+```
+
+Great! We can see that the bookmark `main` is correctly pointing to our recently completed commit.
+
+Now that we're connected and have a bookmark, let's finally send our commit to the remote. The technical term for sending commits is "pushing" them. You will often hear phrases like "pushing to the remote" or "pushing to GitHub". The command for pushing a specific bookmark is:
+
+```sh
+jj git push --bookmark main
+```
