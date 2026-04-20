@@ -1,12 +1,10 @@
 ---
-title: "Creating a new commit - Jujutsu for everyone"
-source: "https://jj-for-everyone.github.io/commit.html"
-author:
-published:
+title: Creating a new commit - Jujutsu for everyone
+source: https://jj-for-everyone.github.io/commit.html
 created: 2026-04-20
-description: "A Jujutsu tutorial that requires no previous experience with Git or other version control systems."
+description: A Jujutsu tutorial that requires no previous experience with Git or other version control systems.
 tags:
-  - "clippings"
+  - clippings
 ---
 ## Creating a new commit
 

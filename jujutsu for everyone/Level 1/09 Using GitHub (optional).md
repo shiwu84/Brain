@@ -1,12 +1,10 @@
 ---
-title: "Using GitHub (optional) - Jujutsu for everyone"
-source: "https://jj-for-everyone.github.io/github.html"
-author:
-published:
+title: Using GitHub (optional) - Jujutsu for everyone
+source: https://jj-for-everyone.github.io/github.html
 created: 2026-04-20
-description: "A Jujutsu tutorial that requires no previous experience with Git or other version control systems."
+description: A Jujutsu tutorial that requires no previous experience with Git or other version control systems.
 tags:
-  - "clippings"
+  - clippings
 ---
 ## Using GitHub (optional)
 

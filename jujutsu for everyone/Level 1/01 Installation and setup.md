@@ -1,12 +1,10 @@
 ---
-title: "Installation and setup - Jujutsu for everyone"
-source: "https://jj-for-everyone.github.io/install.html"
-author:
-published:
+title: Installation and setup - Jujutsu for everyone
+source: https://jj-for-everyone.github.io/install.html
 created: 2026-04-20
-description: "A Jujutsu tutorial that requires no previous experience with Git or other version control systems."
+description: A Jujutsu tutorial that requires no previous experience with Git or other version control systems.
 tags:
-  - "clippings"
+  - clippings
 ---
 ## Installation and setup
 
